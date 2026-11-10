@@ -203,7 +203,7 @@ const LV=[
  {name:'Россыпь камней',desc:'Камни ломают строй — используй их.',mult:.75,wave:9,en:[[210,72]],hp:1100,start:6,mix:[3,3,1,1],obs:[s(120,300,16),s(300,255,20),s(205,420,14),s(80,505,18),s(345,480,22),s(255,575,12),s(150,190,13),s(290,150,11)]},
  {name:'Сухая ветка',desc:'Ветка поперёк поля. Прорыв только через проходы.',mult:.85,wave:11,en:[[210,72]],hp:1200,start:8,mix:[2,3,1,2],obs:[b(-10,388,140,372,7),b(190,378,285,394,7),b(340,390,430,374,7),s(60,250,12),s(360,560,14)]},
  {name:'Лужа',desc:'Вода в центре. Обходи с флангов.',mult:.95,wave:13,en:[[210,72]],hp:1300,start:8,mix:[2,3,1,2],obs:[w(210,385,88),s(40,300,12),s(380,470,13),s(120,590,10)]},
- {name:'Окопы',desc:'Враг окопался и уже собрал армию.',mult:1,wave:14,en:[[210,72]],hp:1400,start:20,mix:[2,3,2,2],obs:rowA.concat(rowB)},
+ {name:'Окопы',desc:'Враг окопался и уже собрал армию.',mult:.9,wave:16,en:[[210,72]],hp:1400,start:14,pstart:12,grace:50,mix:[2,3,2,2],obs:rowA.concat(rowB)},
  {name:'Два муравейника',desc:'Два вражеских гнезда. Сожги оба.',mult:.9,wave:12,en:[[105,72],[315,72]],hp:1100,start:10,mix:[3,3,1,2],obs:[s(210,300,22),s(210,470,18),b(80,392,160,402,6),b(260,402,340,392,6)]},
  {name:'Блицкриг',desc:'Враг плодится почти вдвое быстрее. Держи фронт.',mult:1.45,wave:8,en:[[210,72]],hp:1500,start:10,mix:[4,3,1,1],obs:[s(140,330,15),s(280,330,15),s(210,470,12)]},
  {name:'Сан‑Диего',desc:'Финал. Фронт на всё поле, два гнезда.',mult:1.25,wave:16,en:[[110,72],[310,72]],hp:1700,start:16,mix:[3,3,2,2],obs:[w(95,420,50),b(230,345,430,365,7),s(300,520,18),s(180,560,12),s(330,215,14),s(150,240,13)]}
@@ -387,7 +387,8 @@ function newGame(mode,li,pfac,lvOverride,camp){
  resize();
  const pnest=G.nests[0];
  if(mode==='demo'){for(let i=0;i<lv.start;i++){const u=spawn(0,pfac,pickType(pnest),pnest.x+rnd(-50,50),pnest.y-rnd(30,90));}}
- else{const o=FAC[pfac].order;[o[0],o[0],o[1],o[1],o[3],o[0]].forEach((t,i)=>spawn(0,pfac,t,pnest.x-35+i*14,pnest.y-55+rnd(-6,6)));}
+ else{const o=FAC[pfac].order;[o[0],o[0],o[1],o[1],o[3],o[0]].forEach((t,i)=>spawn(0,pfac,t,pnest.x-35+i*14,pnest.y-55+rnd(-6,6)));
+  for(let i=6;i<(lv.pstart||6);i++)spawn(0,pfac,o[[1,2,3,0][i%4]],pnest.x+rnd(-60,60),pnest.y-rnd(40,80));}
  const en=G.nests.filter(n=>n.side===1);
  for(let i=0;i<lv.start;i++){const n=en[i%en.length];spawn(1,efac,pickType(n),Math.max(8,Math.min(W-8,n.x+rnd(-60,60))),n.y+rnd(35,lv.start>20?190:100));}
  if(lv.ambush)for(const[ax,ay,c]of lv.ambush)for(let i=0;i<c;i++){const u=spawn(1,efac,pickType(en[0]),ax+rnd(-30,30),ay+rnd(-20,20));u.hold=true;}
@@ -569,7 +570,7 @@ function aiTick(sd){
  for(const e of G.units){if(!e.alive||e.side===sd||!seen(sd,e.x,e.y))continue;for(const n of my){if((e.x-n.x)**2+(e.y-n.y)**2<180*180){tx+=e.x;ty+=e.y;tc++;break;}}}
  if(tc>=2){for(const u of home)if(!u.target)orderMove(u,tx/tc+rnd(-20,20),ty/tc+rnd(-20,20));}
  else for(const u of home){if(u.order.k==='idle'&&!u.target){const n=nearestOf(my,u),g=gp(sd,n);if(hyp(u.x-g.x,u.y-g.y)>60)orderMove(u,g.x,g.y);}}
- if(home.length>=st.wave){let cx=0,cy=0;for(const u of home){cx+=u.x;cy+=u.y;}const tg=nearestOf(foe,{x:cx/home.length,y:cy/home.length});
+ if(home.length>=st.wave&&G.time>=(G.mode==='demo'?8:(G.lv.grace||35))){let cx=0,cy=0;for(const u of home){cx+=u.x;cy+=u.y;}const tg=nearestOf(foe,{x:cx/home.length,y:cy/home.length});
   for(const u of home){u.wave=true;orderMove(u,tg.x+rnd(-30,30),tg.y+rnd(-20,20));}st.wave=Math.min(st.wave+2,36);}
  for(const u of units)if(u.wave&&u.order.k==='idle'&&!u.target){const n=nearestOf(foe,u);orderMove(u,n.x+rnd(-15,15),n.y+rnd(-15,15));}
  if(G.ab[sd].cd<=0){let eng=0;for(const u of units)if(u.target&&!u.target.isNest&&hyp(u.x-u.target.x,u.y-u.target.y)<30)eng++;if(eng>=Math.max(8,units.length*.35))useAb(sd);}
