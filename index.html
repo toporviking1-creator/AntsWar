@@ -215,10 +215,11 @@ ul.h b{color:#ffcf7a}
       <h2>Кампания 6: Три колонии 👑</h2>
       <ul class="h">
         <li><b>Три колонии</b> — каждая сама за себя. Враги дерутся и с тобой, и друг с другом.</li>
+        <li>🐜 <b>Аргентинские</b> — дикая суперколония на каждом фронте. <b>Мураши</b> вылупляются роем по 3–4, <b>Бочонки</b> — медленные танки. Бьют всех.</li>
         <li><b>Господство:</b> удержи сектора на 60% веса 60 секунд — победа без штурма гнёзд. Но и враг может так победить!</li>
         <li>👑 <b>Тронный зал</b> весит как два сектора · 🪲 <b>Жучиный феромон</b> — жуки-монстры тебя не трогают · 🦴 <b>Падальщики</b> — тела в гнезде кормят на 60% лучше</li>
         <li>🤝 <b>Союз:</b> если ты вырвешься вперёд, враги объединятся против тебя. Отступи — и союз развалится.</li>
-        <li>Или уничтожь оба вражеских гнезда. Туман, жуки, ночь, ливни и медведки — на месте.</li>
+        <li>Или уничтожь все вражеские гнёзда (и аргентинские тоже). Туман, жуки, ночь, ливни и медведки — на месте.</li>
       </ul>
       <div class="row"><button class="btn pri" id="h6Ok">В бой</button></div>
     </div>
@@ -253,6 +254,13 @@ const FAC={
    soldier:{sight:70,name:'Солдат',desc:'быстрый боец',hp:46,spd:44,dmg:6.5,rate:.72,size:1,spawn:4,legs:1.15},
    bighead:{sight:55,name:'Головач',desc:'щит',hp:120,spd:26,dmg:11,rate:.9,size:1.3,spawn:8.5,armor:2,head:1.6},
    gunner:{sight:90,name:'Кислотомёт',desc:'дальнобой',hp:24,spd:34,dmg:5,rate:1.05,range:74,splash:12,size:1,spawn:6.6,gaster:1.4,shot:'acid'}
+  }},
+ argent:{name:'Аргентинские',npc:true,tag:'Суперколония-захватчик',ui:'#a8c8ff',ab:{kind:'none',name:'—',desc:'',cd:1e9,dur:0},
+  pal:{body:'#5e6672',dark:'#1a1e26',hi:'#c8d4e4',leg:'#2a2f38',eye:'#05070a'},
+  order:['swarm','barrel'],mix:[6,1],batch:[3,4],cap:90,
+  units:{
+   swarm:{sight:80,dodge:.3,name:'Мураш',desc:'рой по 3–4',hp:12,spd:62,dmg:2,rate:.4,size:.6,spawn:3.4,legs:1.3,gaster:.9},
+   barrel:{sight:55,name:'Бочонок',desc:'танк',hp:240,spd:15,dmg:13,rate:1.2,size:1.8,spawn:13,armor:3,head:1.5,gaster:1.5}
   }},
  black:{name:'Чёрные',tag:'Живучие и массовые',ui:'#efe4d8',ab:{kind:'shell',name:'Панцирь',desc:'−60% входящего урона',cd:28,dur:6},
   pal:{body:'#2a211c',dark:'#070504',hi:'#8c7a6e',leg:'#140f0c',eye:'#000'},
@@ -616,15 +624,18 @@ function resize(){
 /* ---------- game setup ---------- */
 function newGame(mode,li,pfac,lvOverride,camp){
  camp=camp||1;const LS=camp===6?LV6:camp===5?LV5:camp===4?LV4:camp===3?LV3:camp===2?LV2:LV;const lv=lvOverride||LS[li];const efac=pfac==='black'?'red':'black',fac3=['red','black','yellow'].find(f=>f!==pfac&&f!==efac);
- G={mode,li,lv,camp,levels:LS,fog:camp>=2&&mode==='play',pts:(lv.pts||[]).map(([x,y,k])=>({x,y,k,r:18,own:-1,hp:0,cp:0,cs:-1,nest:null,build:null})),own:[0,0,0,0],bon:[{},{},{},{}],truce:false,lead:-1,trT:0,dom:[0,0,0,0],domT:0,domWin:null,ptT:0,night:0,sightMul:1,cyc:lv.nightStart||0,rain:0,rainT:40,rainLeft:0,q:null,qT:30,lows:lv.low||[],webs:[],traps:[],trapCd:{resin:0,poison:0,lure:0},placing:null,nat:[],bodies:[],food:[0,0,0,0],healT:0,bodyT:0,lureT:0,nomT:lv.nomad?(lv.nomFirst||60):1e9,vis:[0,1,2,3].map(()=>new Uint8Array(FW*FH)),exp:[0,1,2,3].map(()=>new Uint8Array(FW*FH)),fogT:0,fac:[pfac,efac,'bug',fac3],units:[],nests:[],proj:[],parts:[],marks:[],corpses:[],sel:new Set(),rally:null,bugs:mode==='play'&&li>=2,bugT:35,bugAI:1,bugsKilled:0,auto:true,
-  time:0,dead:0,lost:0,killed:0,over:false,win:false,endT:0,shown:false,paused:false,cnt:[0,0,0,0],
-  ab:[{cd:5,t:0},{cd:10,t:0},{cd:0,t:0},{cd:13,t:0}],ai:[{wave:lv.wave,tick:1},{wave:lv.wave,tick:.5},{wave:99,tick:9},{wave:lv.wave,tick:.9}],obs:lv.obs,col:[],seed:1000+li*77+(mode==='demo'?5:0)+(camp===2?333:camp===3?777:camp===4?555:camp===5?999:camp===6?1111:0),prodOn:{},uid:1};
+ G={mode,li,lv,camp,levels:LS,fog:camp>=2&&mode==='play',pts:(lv.pts||[]).map(([x,y,k])=>({x,y,k,r:18,own:-1,hp:0,cp:0,cs:-1,nest:null,build:null})),own:[0,0,0,0,0],bon:[{},{},{},{},{}],truce:false,lead:-1,trT:0,dom:[0,0,0,0,0],domT:0,domWin:null,ptT:0,night:0,sightMul:1,cyc:lv.nightStart||0,rain:0,rainT:40,rainLeft:0,q:null,qT:30,lows:lv.low||[],webs:[],traps:[],trapCd:{resin:0,poison:0,lure:0},placing:null,nat:[],bodies:[],food:[0,0,0,0,0],healT:0,bodyT:0,lureT:0,nomT:lv.nomad?(lv.nomFirst||60):1e9,vis:[0,1,2,3,4].map(()=>new Uint8Array(FW*FH)),exp:[0,1,2,3,4].map(()=>new Uint8Array(FW*FH)),fogT:0,fac:[pfac,efac,'bug',fac3,'argent'],units:[],nests:[],proj:[],parts:[],marks:[],corpses:[],sel:new Set(),rally:null,bugs:mode==='play'&&li>=2,bugT:35,bugAI:1,bugsKilled:0,auto:true,
+  time:0,dead:0,lost:0,killed:0,over:false,win:false,endT:0,shown:false,paused:false,cnt:[0,0,0,0,0],
+  ab:[{cd:5,t:0},{cd:10,t:0},{cd:0,t:0},{cd:13,t:0},{cd:1e9,t:0}],ai:[{wave:lv.wave,tick:1},{wave:lv.wave,tick:.5},{wave:99,tick:9},{wave:lv.wave,tick:.9},{wave:lv.wave+4,tick:.7}],obs:lv.obs,col:[],seed:1000+li*77+(mode==='demo'?5:0)+(camp===2?333:camp===3?777:camp===4?555:camp===5?999:camp===6?1111:0),prodOn:{},uid:1};
  for(const t of FAC[pfac].order)G.prodOn[t]=true;
  for(const o of lv.obs){if(o.k==='branch')G.col.push({c:2,ax:o.ax,ay:o.ay,bx:o.bx,by:o.by,r:o.r});else G.col.push({c:1,x:o.x,y:o.y,r:o.k==='water'?o.r*1.02:o.r});}
  const mkN=(side,x,y,hp)=>({isNest:true,side,fac:G.fac[side],x,y,r:22,hp,max:hp,alive:true,cur:null,prodT:0,hitT:0});
  G.nests.push(mkN(0,210,690,mode==='demo'?lv.hp:1400));
  let ePos=lv.en;if(lv.spots){const sp=lv.spots.slice();for(let i=sp.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[sp[i],sp[j]]=[sp[j],sp[i]];}ePos=sp.slice(0,camp===6?2:lv.n||1);}
  ePos.forEach((e,i)=>G.nests.push(mkN(camp===6&&i===1?3:1,e[0],e[1],lv.hp)));
+ if(camp===6){const cand=(lv.s4||[[44,440],[376,440],[44,240],[376,240],[44,340],[376,340]]).slice().sort(()=>Math.random()-.5);
+  const ok=c=>G.nests.every(n=>hyp(n.x-c[0],n.y-c[1])>(n.side===0?270:130))&&(lv.pts||[]).every(q=>hyp(q[0]-c[0],q[1]-c[1])>45)&&lv.obs.every(o=>o.k==='branch'||hyp(o.x-c[0],o.y-c[1])>o.r+30);
+  const c=cand.find(ok)||cand[0];G.nests.push(mkN(4,c[0],c[1],Math.round(lv.hp*.8)));}
  if(mode==='play'&&!(camp===1&&li===0)){const Rn=rng(G.seed+99),kinds=Object.keys(NAT),cnt=2+(Rn()*3|0);
   for(let tries=0;tries<200&&G.nat.length<cnt;tries++){const x=30+Rn()*360,y=150+Rn()*470,k=kinds[Rn()*3|0];
    if(G.nests.some(n=>hyp(n.x-x,n.y-y)<95)||G.pts.some(q=>hyp(q.x-x,q.y-y)<55)||G.nat.some(q=>hyp(q.x-x,q.y-y)<70)||(lv.boss&&G.nests.some(n=>n.side===1&&hyp(n.x-x,n.y+58-y)<110)))continue;
@@ -640,11 +651,12 @@ function newGame(mode,li,pfac,lvOverride,camp){
  else{const o=FAC[pfac].order;[o[0],o[0],o[1],o[1],o[3],o[0]].forEach((t,i)=>spawn(0,pfac,t,pnest.x-35+i*14,pnest.y-55+rnd(-6,6)));
   for(let i=6;i<(lv.pstart||6);i++)spawn(0,pfac,o[[1,2,3,0][i%4]],pnest.x+rnd(-60,60),pnest.y-rnd(40,80));}
  const en=G.nests.filter(n=>n.side===1);
+ for(const n of G.nests)if(n.side===4)for(let i=0;i<Math.round(lv.start*1.5);i++)spawn(4,'argent',pickType(n),Math.max(8,Math.min(W-8,n.x+rnd(-40,40))),Math.max(8,Math.min(H-8,n.y+rnd(-40,40))));
  for(const n of G.nests)if(n.side===3)for(let i=0;i<lv.start;i++)spawn(3,fac3,pickType(n),Math.max(8,Math.min(W-8,n.x+rnd(-55,55))),Math.max(8,Math.min(H-8,n.y+rnd(-50,90))));
  for(let i=0;i<lv.start;i++){const n=en[i%en.length];spawn(1,efac,pickType(n),Math.max(8,Math.min(W-8,n.x+rnd(-60,60))),n.y+rnd(35,lv.start>20?190:100));}
  if(lv.boss)en.forEach((n,i)=>{const t=lv.boss[i%lv.boss.length];if(!t)return;const bb=spawn(1,'boss',t,n.x,n.y+58);bb.home=n;bb.a=Math.PI/2;n.guards=[bb];if(t==='centipede'){bb.trail=[];for(let k=0;k<160;k++)bb.trail.push({x:n.x,y:n.y+58-k*1.5});}});
  if(lv.ambush)for(const[ax,ay,c]of lv.ambush)for(let i=0;i<c;i++){const u=spawn(1,efac,pickType(en[0]),ax+rnd(-30,30),ay+rnd(-20,20));u.hold=true;}
- if(G.fog){computeVis(0);computeVis(1);if(camp===6)computeVis(3);}
+ if(G.fog){computeVis(0);computeVis(1);if(camp===6){computeVis(3);computeVis(4);}}
 }
 function newDemo(){newGame('demo',0,'black',Object.assign({},LV[0],{mult:1,wave:10,start:10,hp:700,mix:[3,3,1,2],obs:[s(80,330,14),s(330,420,16),s(200,480,10)]}));}
 function spawn(side,fac,type,x,y){
@@ -656,6 +668,7 @@ function spawn(side,fac,type,x,y){
 function pickType(n){
  const F=FAC[n.fac];
  if(n.side===0&&G.mode==='play'){const o=F.order,i=o.indexOf(n.cur);for(let k=1;k<=4;k++){const t=o[(i+k+4)%4];if(G.prodOn[t])return t;}return o[0];}
+ if(F.mix){const m=F.mix,r=Math.random()*(m[0]+m[1]);return F.order[r<m[0]?0:1];}
  const st=G.ai[n.side],b=(n.side===0&&G.mix0)||G.lv.mix,m=st&&st.counter?[b[0]*2+3,b[1],b[2]+.5,b[3]*.35]:b;let r=Math.random()*m.reduce((a,c)=>a+c,0);for(let i=0;i<4;i++){r-=m[i];if(r<0)return F.order[i];}return F.order[0];
 }
 const gp=(side,n)=>({x:Math.max(10,Math.min(W-10,n.x+rnd(-45,45))),y:n.y+(side===0?-62:62)+rnd(-12,12)});
@@ -717,8 +730,8 @@ function avoid(u,mx,my,gx,gy){
 }
 
 /* ---------- combat ---------- */
-const isCol=s=>s===0||s===1||s===3,COLS=[0,1,3];
-const foe=(a,b)=>a!==b&&!(G.truce&&a+b===4&&a!==2);
+const isCol=s=>s===0||s===1||s===3||s===4,COLS=[0,1,3,4],AIS=[1,3,4];
+const foe=(a,b)=>a!==b&&!(G.truce&&a!==0&&b!==0&&a!==2&&b!==2);
 const abK=(side,k)=>isCol(side)&&G.ab[side].t>0&&FAC[G.fac[side]].ab.kind===k;
 const isRage=side=>abK(side,'rage'),isShell=side=>abK(side,'shell'),isDash=side=>abK(side,'dash');
 const bn=(side,k)=>isCol(side)?(G.bon[side][k]||0):0;
@@ -829,12 +842,12 @@ function spawnBug(){const ks=Object.keys(BUG),t=ks[Math.random()*ks.length|0],d=
 function updNest(n,dt){
  if(!n.alive)return;n.hitT=Math.max(0,n.hitT-dt);
  {const f=n.hp/n.max;if(f<.5&&Math.random()<dt*(1-f)*6)part(n.x+rnd(-14,14),n.y+rnd(-12,8),'smoke',1,6,6+(1-f)*6,2.2);}
- if(G.cnt[n.side]>=CAP)return;
+ const NF=FAC[n.fac];if(G.cnt[n.side]>=(NF.cap||CAP))return;
  if(!n.cur)n.cur=pickType(n);
- n.prodT+=dt*(n.side!==0?G.lv.mult:1)*(n.pm||1)*(G.camp>=5?1+.2*bn(n.side,'brood'):1+.15*(G.own[n.side]||0));
+ n.prodT+=dt*(n.side!==0?G.lv.mult*(n.side===4?.85:1):1)*(n.pm||1)*(G.camp>=5?1+.2*bn(n.side,'brood'):1+.15*(G.own[n.side]||0));
  const need=FAC[n.fac].units[n.cur].spawn;
  if(n.prodT>=need){
-  n.prodT=0;deliver(n,n.cur);
+  n.prodT=0;deliver(n,n.cur);if(NF.batch&&n.cur===NF.order[0]){const k=NF.batch[0]+(Math.random()*(NF.batch[1]-NF.batch[0]+1)|0);for(let i=1;i<k;i++)deliver(n,n.cur);}
   n.cur=pickType(n);
  }
 }
@@ -855,10 +868,10 @@ function aiTick(sd){
  for(const e of G.units){if(!e.alive||!foe(sd,e.side)||!seen(sd,e.x,e.y))continue;for(const n of my){if((e.x-n.x)**2+(e.y-n.y)**2<180*180){tx+=e.x;ty+=e.y;tc++;break;}}}
  if(tc>=2){for(const u of home)if(!u.target)orderMove(u,tx/tc+rnd(-20,20),ty/tc+rnd(-20,20));}
  else for(const u of home){if(u.order.k==='idle'&&!u.target){const n=nearestOf(my,u),g=gp(sd,n);if(hyp(u.x-g.x,u.y-g.y)>60)orderMove(u,g.x,g.y);}}
- if(home.length>=st.wave&&G.time>=(G.mode==='demo'?8:(G.lv.grace||35))){let cx=0,cy=0;for(const u of home){cx+=u.x;cy+=u.y;}const tg=pickTarget(sd,foeArr,{x:cx/home.length,y:cy/home.length});
+ if(home.length>=st.wave&&G.time>=(G.mode==='demo'?8:sd===4?70:(G.lv.grace||35))){let cx=0,cy=0;for(const u of home){cx+=u.x;cy+=u.y;}const tg=pickTarget(sd,foeArr,{x:cx/home.length,y:cy/home.length});
   for(const u of home){u.wave=true;orderMove(u,tg.x+rnd(-30,30),tg.y+rnd(-20,20));}st.wave=Math.min(st.wave+2,36);}
  for(const u of units)if(u.wave&&u.order.k==='idle'&&!u.target){const n=nearestOf(foeArr,u);orderMove(u,n.x+rnd(-15,15),n.y+rnd(-15,15));}
- if(G.ab[sd].cd<=0){let eng=0;for(const u of units)if(u.target&&!u.target.isNest&&hyp(u.x-u.target.x,u.y-u.target.y)<30)eng++;if(eng>=Math.max(8,units.length*.35))useAb(sd);}
+ if(G.ab[sd].cd<=0&&FAC[G.fac[sd]].ab.kind!=='none'){let eng=0;for(const u of units)if(u.target&&!u.target.isNest&&hyp(u.x-u.target.x,u.y-u.target.y)<30)eng++;if(eng>=Math.max(8,units.length*.35))useAb(sd);}
 }
 function fi(x,y){return Math.max(0,Math.min(FH-1,y/FC|0))*FW+Math.max(0,Math.min(FW-1,x/FC|0));}
 const seen=(sd,x,y)=>!G.fog||G.vis[sd][fi(x,y)]===1;
@@ -876,9 +889,9 @@ function computeVis(sd){const V=G.vis[sd],E=G.exp[sd];V.fill(0);if(sd===0)SOFT.f
   fogX.putImageData(fogImg,0,0);}}
 function update(dt){
  G.time+=dt;
- if(G.fog){G.fogT-=dt;if(G.fogT<=0){G.fogT=.15;computeVis(0);computeVis(1);if(G.camp===6)computeVis(3);for(const n of G.nests)if(n.side!==0&&n.alive&&!n.found&&G.exp[0][fi(n.x,n.y)]){n.found=true;toast(G.camp===6?'Найдено гнездо: '+FAC[n.fac].name+'!':'Вражеское гнездо обнаружено!');}}}
+ if(G.fog){G.fogT-=dt;if(G.fogT<=0){G.fogT=.15;computeVis(0);computeVis(1);if(G.camp===6){computeVis(3);computeVis(4);}for(const n of G.nests)if(n.side!==0&&n.alive&&!n.found&&G.exp[0][fi(n.x,n.y)]){n.found=true;toast(G.camp===6?'Найдено гнездо: '+FAC[n.fac].name+'!':'Вражеское гнездо обнаружено!');}}}
  G.ab.forEach((a,i)=>{a.cd=Math.max(0,a.cd-dt*(1+.35*bn(i,'fury')));a.t=Math.max(0,a.t-dt);});
- G.cnt[0]=G.cnt[1]=G.cnt[2]=G.cnt[3]=0;for(const u of G.units)if(u.alive)G.cnt[u.side]++;
+ G.cnt[0]=G.cnt[1]=G.cnt[2]=G.cnt[3]=G.cnt[4]=0;for(const u of G.units)if(u.alive)G.cnt[u.side]++;
  buildGrid();
  for(const n of G.nests)updNest(n,dt);
  const UA=G.units;for(let i=UA.length-1;i>0;i--){const j=Math.random()*(i+1)|0,x=UA[i];UA[i]=UA[j];UA[j]=x;}
@@ -904,7 +917,7 @@ function update(dt){
  for(const wb of G.webs){wb.t-=dt;wb.f=Math.max(0,wb.f-dt);}G.webs=G.webs.filter(wb=>wb.t>0);
  if(G.bugs&&!G.over){G.bugT-=dt;if(G.bugT<=0){G.bugT=rnd(45,70);if(G.units.filter(u=>u.fac==='bug').length<2)spawnBug();}
   G.bugAI-=dt;if(G.bugAI<=0){G.bugAI=1;for(const u of G.units)if(u.fac==='bug'&&!u.target&&u.order.k==='idle')orderMove(u,rnd(40,W-40),rnd(200,560));}}
- for(const sd of COLS){if((sd===0&&G.mode!=='demo')||(sd===3&&G.camp!==6))continue;G.ai[sd].tick-=dt;if(G.ai[sd].tick<=0){G.ai[sd].tick=.8;aiTick(sd);}}
+ for(const sd of COLS){if((sd===0&&G.mode!=='demo')||(sd>=3&&G.camp!==6))continue;G.ai[sd].tick-=dt;if(G.ai[sd].tick<=0){G.ai[sd].tick=.8;aiTick(sd);}}
  G.units=G.units.filter(u=>u.alive);
  if(!G.over){const pA=G.nests.some(n=>n.side===0&&n.alive),eA=G.nests.some(n=>n.side!==0&&n.alive);
   if(G.domWin!=null){G.over=true;G.win=G.domWin===0;G.endT=2;G.sel.clear();}
@@ -919,7 +932,7 @@ function tryBuild(sd){const L=canBuild(sd);if(!L.length)return false;const ref=s
 function createNest(q,sd){const n={isNest:true,side:sd,fac:G.fac[sd],x:q.x,y:q.y,r:20,hp:800,max:800,alive:true,cur:null,prodT:0,hitT:0,extra:true,pm:.6,pt:q};
  G.nests.push(n);q.nest=n;q.build=null;bctx.setTransform(K,0,0,K,OX*DPR,OY*DPR);mound(bctx,n,rng(q.x*31+q.y));part(q.x,q.y,'dust',12,30,8,1);
  if(sd===0)toast('Новое гнездо заложено!');else if(seen(0,q.x,q.y))toast('Враг заложил гнездо на кормушке!');}
-function updPts(dt){G.ptT-=dt;if(G.ptT>0)return;const st=.25;G.ptT=st;G.own=[0,0,0,0];G.bon=[{},{},{},{}];
+function updPts(dt){G.ptT-=dt;if(G.ptT>0)return;const st=.25;G.ptT=st;G.own=[0,0,0,0,0];G.bon=[{},{},{},{},{}];
  for(const q of G.pts){
   if(q.nest&&q.nest.alive){q.own=q.nest.side;q.hp=1;G.own[q.own]++;continue;}
   const c=[0,0,0,0];const RR=(q.r+16)**2;for(const u of G.units)if(u.alive&&isCol(u.side)&&(u.x-q.x)**2+(u.y-q.y)**2<RR)c[u.side]++;
@@ -941,10 +954,10 @@ function updDom(dt){if(G.over)return;const D=domInfo(),alive=sd=>G.nests.some(n=
    if(G.dom[sd]>=60){G.domWin=sd;toast(sd===0?'👑 Сан‑Диего наш — господство!':'👑 '+FAC[G.fac[sd]].name+' установили господство');}}
   else{if(had>0&&sd!==0)toast('Господство '+FAC[G.fac[sd]].name+' сорвано!');else if(had>0)toast('Господство потеряно!');G.dom[sd]=0;}}
  G.trT-=dt;if(G.trT>0)return;G.trT=1;
- const sc=sd=>alive(sd)?D.w[sd]*3+G.cnt[sd]*.25+G.nests.filter(n=>n.alive&&n.side===sd).length*6+G.dom[sd]*.3:-1e9,s0=sc(0),s1=sc(1),s3=sc(3);
- G.lead=s0>=s1&&s0>=s3?0:s1>=s3?1:3;
- const both=alive(1)&&alive(3),mx=Math.max(s1,s3);
- if(!G.truce&&both&&G.time>40&&(s0>mx*1.35+4||G.dom[0]>0)){G.truce=true;G.trMin=G.time+25;sfx('alarm');toast('🤝 '+FAC[G.fac[1]].name+' и '+FAC[G.fac[3]].name+' заключили союз против тебя!');for(const u of G.units)if(u.alive&&(u.side===1||u.side===3)&&u.target&&!u.target.isNest&&(u.target.side===1||u.target.side===3)){u.target=null;u.focus=null;}}
+ const sc=sd=>alive(sd)?D.w[sd]*3+G.cnt[sd]*(sd===4?.12:.25)+G.nests.filter(n=>n.alive&&n.side===sd).length*6+G.dom[sd]*.3:-1e9,S=COLS.map(sc);
+ G.lead=COLS[S.indexOf(Math.max(...S))];
+ const both=AIS.filter(alive).length>=2,s0=S[0],mx=Math.max(S[1],S[2],S[3]);
+ if(!G.truce&&both&&G.time>40&&(s0>mx*1.35+4||G.dom[0]>0)){G.truce=true;G.trMin=G.time+25;sfx('alarm');toast('🤝 Все враги заключили союз против тебя!');for(const u of G.units)if(u.alive&&u.side!==0&&u.side!==2&&u.target&&u.target.side!==0&&u.target.side!==2){u.target=null;u.focus=null;}}
  else if(G.truce&&(!both||(G.time>G.trMin&&s0<mx*1.1&&G.dom[0]===0))){G.truce=false;toast(both?'💥 Союз врагов распался — они снова грызутся!':'Союз врагов распался');}}
 function updWx(dt){const lv=G.lv;
  if(lv.night){G.cyc=(G.cyc+dt)%100;const c=G.cyc,was=G.night;G.night=c<55?0:c<63?(c-55)/8:c<93?1:1-(c-93)/7;if(was<.5&&G.night>=.5)toast('🌙 Ночь. Обзор падает');if(was>=.5&&G.night<.5)toast('☀️ Рассвет');}
@@ -1191,7 +1204,7 @@ function buildHUD(){
  const c3=G.camp===3;$('bNest').classList.toggle('hid',!c3);$('wx').classList.toggle('hid',!(c3||G.camp>=5));$('bonBar').classList.toggle('hid',G.camp<5);$('bonBar').innerHTML='';HUD.last.bon='';$('cmds').classList.toggle('c5',c3);$('bAuto').textContent=c3?'Авто':'Авто‑фронт';
 }
 function hud(){
- setText('cMine',String(G.cnt[0]));setText('cFoe',G.fog?'?':String(G.cnt[1]+G.cnt[3]));setText('cDead','☠ '+G.dead);
+ setText('cMine',String(G.cnt[0]));setText('cFoe',G.fog?'?':String(G.cnt[1]+G.cnt[3]+G.cnt[4]));setText('cDead','☠ '+G.dead);
  const n=pnest(),F=FAC[G.fac[0]];
  for(const t in HUD.bars)HUD.bars[t].style.width=(n&&n.alive&&n.cur===t?Math.min(100,n.prodT/F.units[t].spawn*100):0)+'%';
  const a=G.ab[0],bA=$('bAb');
@@ -1204,9 +1217,9 @@ function hud(){
   setText('bNest',bld?'Гнездо '+Math.ceil(15-bld.build.t)+'с':'Гнездо');
   setText('wx','⬢'+G.own[0]+'/'+G.pts.length+' '+(G.night>.5?'🌙':'☀️')+(G.rain>.2?'🌧':'')+(G.q?'⚠':''));}
  if(G.camp>=5){const c6=G.camp===6,dm=c6?COLS.find(sd=>G.dom[sd]>0):undefined;setText('wx','⬢'+G.own[0]+(c6?'':':'+(G.fog?'?':G.own[1]))+(dm!=null?' 👑'+(dm===0?'':'⚠')+Math.ceil(60-G.dom[dm]):'')+(c6&&G.truce?' 🤝':'')+' '+(G.night>.5?'🌙':'')+(G.rain>.2?'🌧':'')+(G.q?'⚠':''));
-  const ks=Object.keys(SEC).filter(k=>G.bon[0][k]),key=ks.map(k=>k+G.bon[0][k]).join()+'|'+G.own[1]+'|'+G.own[3];
+  const ks=Object.keys(SEC).filter(k=>G.bon[0][k]),key=ks.map(k=>k+G.bon[0][k]).join()+'|'+G.own[1]+'|'+G.own[3]+'|'+G.own[4];
   if(HUD.last.bon!==key){HUD.last.bon=key;const bb=$('bonBar');bb.innerHTML='';for(const k of ks){const e=document.createElement('span');e.textContent=SEC[k].icon+(G.bon[0][k]>1?'×'+G.bon[0][k]:'');bb.appendChild(e);}
-   for(const sd of[1,3])if(G.own[sd]){const e=document.createElement('span');e.className='e';e.textContent=(G.camp===6?FAC[G.fac[sd]].name.toLowerCase():'враг')+' ⬢'+G.own[sd];if(G.camp===6)e.style.borderColor=FAC[G.fac[sd]].ui;bb.appendChild(e);}}}
+   for(const sd of AIS)if(G.own[sd]){const e=document.createElement('span');e.className='e';e.textContent=(G.camp===6?FAC[G.fac[sd]].name.toLowerCase():'враг')+' ⬢'+G.own[sd];if(G.camp===6)e.style.borderColor=FAC[G.fac[sd]].ui;bb.appendChild(e);}}}
 }
 function buildMenu(){const box=$('facs');box.innerHTML='';
  for(const f of['red','black','yellow']){const F=FAC[f],bt=document.createElement('button');bt.className='fcard';bt.style.setProperty('--c',F.ui);
@@ -1226,7 +1239,7 @@ function openLevels(f){curFac=f;const F=FAC[f];$('lvTitle').textContent=F.name;$
  const c4=()=>sec('Кампания 4: Боссы и кочевники 🐜',lk4?'Откроется после кампании «Захват» за эту колонию.':'Стражи-боссы у гнёзд, лавины кочевников, туман.',LV4,prog4,4,lk4);
  const lk5=false;
  const c5=()=>sec('Кампания 5: Сектора 🗺️',lk5?'Откроется после кампании «Боссы и кочевники» за эту колонию.':'Как в Z: каждый сектор даёт колонии своё преимущество. Победа — гнездо.',LV5,prog5,5,lk5);
- const c6=()=>sec('Кампания 6: Три колонии 👑','Три колонии каждая сама за себя. Новые сектора, господство, союзы врагов против лидера.',LV6,prog6,6,false);
+ const c6=()=>sec('Кампания 6: Три колонии 👑','Три колонии и дикие аргентинские муравьи. Новые сектора, господство, союзы врагов против лидера.',LV6,prog6,6,false);
  c6();c1();c2();c3();c4();c5();
  show('levels');}
 function startLevel(i,camp){camp=camp||1;show(null);setHud(true);newGame('play',i,curFac,null,camp);buildHUD();
