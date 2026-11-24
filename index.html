@@ -251,6 +251,20 @@ ul.h b{color:#ffcf7a}
       <div class="row"><button class="btn pri" id="h7Ok">В бой</button></div>
     </div>
   </div>
+  <div id="hint8" class="ov">
+    <div class="card">
+      <h2>Кампания 8: Осада 🏰</h2>
+      <ul class="h">
+        <li><b>Волны мощнее,</b> чем в «Обороне». Каждая идёт либо на гнездо, либо на одну из точек — это написано в табличке, а цель обведена красным.</li>
+        <li><b>Захватив точку,</b> враг оставляет до трёх охранников — отбивать придётся с боем.</li>
+        <li>🪲 <b>Жучиная волна</b> — одни жуки-монстры. Идут прямо на гнездо и не отвлекаются на армию, пока их не атакуешь.</li>
+        <li><b>Победа:</b> отбить все волны и держать <b>хотя бы половину точек</b>. Если точек мало — будет 45 секунд, чтобы их отбить.</li>
+        <li>Точки дают бонусы как сектора. Ловушки быстрее и по 2 заряда, кнопка «Волна!» на месте.</li>
+        <li><b>Поражение</b> — пало гнездо или не удержаны точки.</li>
+      </ul>
+      <div class="row"><button class="btn pri" id="h8Ok">В бой</button></div>
+    </div>
+  </div>
   <div id="daily" class="ov">
     <div class="card dcard">
       <h2 id="dT">Испытание дня</h2>
@@ -417,9 +431,20 @@ const LV7=[
  {name:'Стражи пришли',desc:'Боссы из логов идут на гнездо. Ночь и туман.',fog:true,night:true,nightStart:40,def:{N:11,T:555,dirs:['N','W','E'],tier:3,size:22,g:0.72,boss:{5:['antlion'],8:['spider'],10:['mantis']}},start:0,mix:[3,3,2,2],pstart:11,pts:[[90,580,'sap'],[330,580,'jaw'],[150,490,'shell'],[270,490,'fury'],[210,430,'range']],obs:[s(210,330,14)]},
  {name:'Последний бастион',desc:'Финал. Двенадцать волн, все напасти и сороконожка в конце.',fog:true,night:true,rain:true,quake:true,qmin:45,qmax:70,low:[[100,400,40],[320,400,40]],def:{N:12,T:600,dirs:['N','W','E'],tier:3,size:18,g:0.6,boss:{6:['spider'],9:['mantis'],11:['centipede','antlion']}},start:0,mix:[3,3,2,2],pstart:12,pts:[[90,580,'sap'],[330,580,'jaw'],[150,495,'shell'],[270,495,'adren'],[210,435,'wall']],obs:[s(130,320,13),s(290,320,13)]}
 ];
-let prog=P0(),prog2=P0(),prog3=P0(),prog4=P0(),prog5=P0(),prog6=P0(),prog7=P0(),seenC7=false,seenHint=false,seenFog=false,seenC3=false,seenC4=false,seenC5=false,seenC6=false;
-try{const p=JSON.parse(localStorage.getItem('sc_prog')||'null');if(p)prog=Object.assign(prog,p);seenHint=localStorage.getItem('sc_hint')==='1';const p2=JSON.parse(localStorage.getItem('sc_prog2')||'null');if(p2)prog2=Object.assign(prog2,p2);seenFog=localStorage.getItem('sc_fog')==='1';const p3=JSON.parse(localStorage.getItem('sc_prog3')||'null');if(p3)prog3=Object.assign(prog3,p3);seenC3=localStorage.getItem('sc_c3')==='1';const p4=JSON.parse(localStorage.getItem('sc_prog4')||'null');if(p4)prog4=Object.assign(prog4,p4);seenC4=localStorage.getItem('sc_c4')==='1';const p5=JSON.parse(localStorage.getItem('sc_prog5')||'null');if(p5)prog5=Object.assign(prog5,p5);seenC5=localStorage.getItem('sc_c5')==='1';const p6=JSON.parse(localStorage.getItem('sc_prog6')||'null');if(p6)prog6=Object.assign(prog6,p6);seenC6=localStorage.getItem('sc_c6')==='1';const p7=JSON.parse(localStorage.getItem('sc_prog7')||'null');if(p7)prog7=Object.assign(prog7,p7);seenC7=localStorage.getItem('sc_c7')==='1';}catch(e){}
-function save(){try{localStorage.setItem('sc_prog',JSON.stringify(prog));localStorage.setItem('sc_prog2',JSON.stringify(prog2));localStorage.setItem('sc_prog3',JSON.stringify(prog3));localStorage.setItem('sc_prog4',JSON.stringify(prog4));localStorage.setItem('sc_prog5',JSON.stringify(prog5));localStorage.setItem('sc_prog6',JSON.stringify(prog6));localStorage.setItem('sc_prog7',JSON.stringify(prog7));}catch(e){}}
+const P8=(a,b,c,d,e,f)=>[[130,565,a,0],[290,565,b,0],[70,410,c],[350,410,d],[210,335,e]].concat(f?[[210,215,f]]:[]);
+const LV8=[
+ {name:'Предместья',desc:'Пять точек. Волны идут то на гнездо, то на точки. Удержи хотя бы три.',def:{N:7,T:420,dirs:['N'],tier:0,size:8,g:0.5,ptHit:.45,bugEvery:4,bugFrom:3,bugN:2},mix:[3,3,1,1],pstart:10,pts:P8('brood','sap','jaw','shell','legs'),obs:[s(140,300,12),s(280,300,12)]},
+ {name:'Перекрёсток',desc:'Три дороги и первые жучиные волны.',def:{N:8,T:450,dirs:['N','W','E'],tier:1,size:10,g:0.53,ptHit:.5,bugEvery:4,bugFrom:2,bugN:3},mix:[3,3,1,2],pstart:10,pts:P8('brood','sap','adren','range','jaw'),obs:[s(210,460,12),s(60,300,12),s(360,300,12)]},
+ {name:'Сырые луга',desc:'Туман и ливни. Точки в низинах.',fog:true,rain:true,low:[[70,410,40],[350,410,40],[210,250,45]],def:{N:8,T:465,dirs:['N','W','E'],tier:1,size:12,g:0.57,ptHit:.5,bugEvery:3,bugFrom:2,bugN:3},mix:[3,3,1,2],pstart:11,pts:P8('sap','brood','shell','jaw','fury'),obs:[s(140,480,12),s(280,480,12)]},
+ {name:'Ночной штурм',desc:'Ночью волны выходят из темноты прямо на точки.',night:true,nightStart:25,def:{N:9,T:500,dirs:['N','W','E'],tier:1,size:15,g:0.6,ptHit:.6,bugEvery:3,bugFrom:2,bugN:3},mix:[3,3,1,2],pstart:11,pts:P8('eye','sap','jaw','adren','shell'),obs:[s(210,450,14)]},
+ {name:'Тропа орды',desc:'Кочевники, медведки и шесть точек.',quake:true,qmin:40,qmax:60,def:{N:10,T:530,dirs:['N','W','E'],tier:2,size:16,g:0.62,ptHit:.55,bugEvery:3,bugFrom:3,bugN:3},mix:[3,3,2,2],pstart:12,pts:P8('brood','sap','jaw','shell','fury','range'),obs:[s(120,290,12),s(300,290,12)]},
+ {name:'Жучиный год',desc:'Жучиные волны каждая третья и злее обычного. Туман.',fog:true,def:{N:10,T:540,dirs:['N','W','E'],tier:2,size:21,g:0.8,ptHit:.5,bugEvery:3,bugFrom:1,bugN:3},mix:[3,3,2,2],pstart:12,pts:P8('wall','sap','jaw','shell','adren','beast'),obs:[s(210,470,13)]},
+ {name:'Осада стражей',desc:'Боссы идут на точки. Ночь и туман.',fog:true,night:true,nightStart:40,def:{N:11,T:580,dirs:['N','W','E'],tier:3,size:19,g:0.7,ptHit:.55,bugEvery:4,bugFrom:3,bugN:3,boss:{5:['antlion'],8:['spider'],10:['mantis']}},mix:[3,3,2,2],pstart:13,pts:P8('brood','sap','shell','jaw','range','fury'),obs:[s(130,300,12),s(290,300,12)]},
+ {name:'Сан‑Диего в кольце',desc:'Финал. 12 волн, жуки, орды, боссы и сороконожка. Держи точки до конца.',fog:true,night:true,rain:true,quake:true,qmin:45,qmax:70,low:[[100,470,35],[320,470,35]],def:{N:12,T:620,dirs:['N','W','E'],tier:3,size:14,g:0.62,ptHit:.55,bugEvery:4,bugFrom:3,bugN:4,boss:{6:['spider'],9:['mantis'],11:['centipede','antlion']}},mix:[3,3,2,2],pstart:14,pts:P8('brood','sap','shell','jaw','wall','adren'),obs:[s(130,300,12),s(290,300,12)]}
+];
+let prog=P0(),prog8=P0(),seenC8=false,prog2=P0(),prog3=P0(),prog4=P0(),prog5=P0(),prog6=P0(),prog7=P0(),seenC7=false,seenHint=false,seenFog=false,seenC3=false,seenC4=false,seenC5=false,seenC6=false;
+try{const p=JSON.parse(localStorage.getItem('sc_prog')||'null');if(p)prog=Object.assign(prog,p);seenHint=localStorage.getItem('sc_hint')==='1';const p2=JSON.parse(localStorage.getItem('sc_prog2')||'null');if(p2)prog2=Object.assign(prog2,p2);seenFog=localStorage.getItem('sc_fog')==='1';const p3=JSON.parse(localStorage.getItem('sc_prog3')||'null');if(p3)prog3=Object.assign(prog3,p3);seenC3=localStorage.getItem('sc_c3')==='1';const p4=JSON.parse(localStorage.getItem('sc_prog4')||'null');if(p4)prog4=Object.assign(prog4,p4);seenC4=localStorage.getItem('sc_c4')==='1';const p5=JSON.parse(localStorage.getItem('sc_prog5')||'null');if(p5)prog5=Object.assign(prog5,p5);seenC5=localStorage.getItem('sc_c5')==='1';const p6=JSON.parse(localStorage.getItem('sc_prog6')||'null');if(p6)prog6=Object.assign(prog6,p6);seenC6=localStorage.getItem('sc_c6')==='1';const p7=JSON.parse(localStorage.getItem('sc_prog7')||'null');if(p7)prog7=Object.assign(prog7,p7);seenC7=localStorage.getItem('sc_c7')==='1';const p8=JSON.parse(localStorage.getItem('sc_prog8')||'null');if(p8)prog8=Object.assign(prog8,p8);seenC8=localStorage.getItem('sc_c8')==='1';}catch(e){}
+function save(){try{localStorage.setItem('sc_prog',JSON.stringify(prog));localStorage.setItem('sc_prog2',JSON.stringify(prog2));localStorage.setItem('sc_prog3',JSON.stringify(prog3));localStorage.setItem('sc_prog4',JSON.stringify(prog4));localStorage.setItem('sc_prog5',JSON.stringify(prog5));localStorage.setItem('sc_prog6',JSON.stringify(prog6));localStorage.setItem('sc_prog7',JSON.stringify(prog7));localStorage.setItem('sc_prog8',JSON.stringify(prog8));}catch(e){}}
 
 const cv=$('cv'),ctx=cv.getContext('2d');
 const bg=document.createElement('canvas'),bctx=bg.getContext('2d');
@@ -672,10 +697,10 @@ function resize(){
 
 /* ---------- game setup ---------- */
 function newGame(mode,li,pfac,lvOverride,camp){
- camp=camp||1;const LS=camp===7?LV7:camp===6?LV6:camp===5?LV5:camp===4?LV4:camp===3?LV3:camp===2?LV2:LV;const lv=lvOverride||LS[li];const efac=lv.efac||(pfac==='black'?'red':'black'),fac3=['red','black','yellow'].find(f=>f!==pfac&&f!==efac);
- G={mode,li,lv,camp,levels:LS,fog:(lv.fog!=null?lv.fog:camp>=2&&camp!==7)&&mode==='play',def:null,trapMax:lv.def?2:1,trapMul:lv.def?.7:1,trapN:{},noTraps:!!lv.noTraps,pts:(lv.pts||[]).map(([x,y,k])=>({x,y,k,r:18,own:-1,hp:0,cp:0,cs:-1,nest:null,build:null})),own:[0,0,0,0,0],bon:[{},{},{},{},{}],truce:false,lead:-1,trT:0,dom:[0,0,0,0,0],domT:0,domWin:null,ptT:0,night:0,sightMul:1,cyc:lv.nightStart||0,rain:0,rainT:40,rainLeft:0,q:null,qT:30,lows:lv.low||[],webs:[],traps:[],trapCd:{resin:0,poison:0,lure:0},placing:null,nat:[],bodies:[],food:[0,0,0,0,0],healT:0,bodyT:0,lureT:0,nomT:lv.nomad?(lv.nomFirst||60):1e9,vis:[0,1,2,3,4].map(()=>new Uint8Array(FW*FH)),exp:[0,1,2,3,4].map(()=>new Uint8Array(FW*FH)),fogT:0,fac:[pfac,efac,'bug',fac3,'argent'],units:[],nests:[],proj:[],parts:[],marks:[],corpses:[],sel:new Set(),rally:null,bugs:mode==='play'&&!lv.def&&(lv.bugs!=null?lv.bugs:li>=2),bugT:35,bugAI:1,bugsKilled:0,auto:true,
+ camp=camp||1;const LS=camp===8?LV8:camp===7?LV7:camp===6?LV6:camp===5?LV5:camp===4?LV4:camp===3?LV3:camp===2?LV2:LV;const lv=lvOverride||LS[li];const efac=lv.efac||(pfac==='black'?'red':'black'),fac3=['red','black','yellow'].find(f=>f!==pfac&&f!==efac);
+ G={mode,li,lv,camp,levels:LS,fog:(lv.fog!=null?lv.fog:camp>=2&&camp<7)&&mode==='play',def:null,trapMax:lv.def?2:1,trapMul:lv.def?.7:1,trapN:{},noTraps:!!lv.noTraps,pts:(lv.pts||[]).map(([x,y,k,o])=>({x,y,k,r:18,own:o!=null?o:-1,hp:o!=null?1:0,cp:0,cs:-1,nest:null,build:null})),own:[0,0,0,0,0],bon:[{},{},{},{},{}],truce:false,lead:-1,trT:0,dom:[0,0,0,0,0],domT:0,domWin:null,ptT:0,night:0,sightMul:1,cyc:lv.nightStart||0,rain:0,rainT:40,rainLeft:0,q:null,qT:30,lows:lv.low||[],webs:[],traps:[],trapCd:{resin:0,poison:0,lure:0},placing:null,nat:[],bodies:[],food:[0,0,0,0,0],healT:0,bodyT:0,lureT:0,nomT:lv.nomad?(lv.nomFirst||60):1e9,vis:[0,1,2,3,4].map(()=>new Uint8Array(FW*FH)),exp:[0,1,2,3,4].map(()=>new Uint8Array(FW*FH)),fogT:0,fac:[pfac,efac,'bug',fac3,'argent'],units:[],nests:[],proj:[],parts:[],marks:[],corpses:[],sel:new Set(),rally:null,bugs:mode==='play'&&!lv.def&&(lv.bugs!=null?lv.bugs:li>=2),bugT:35,bugAI:1,bugsKilled:0,auto:true,
   time:0,dead:0,lost:0,killed:0,over:false,win:false,endT:0,shown:false,paused:false,cnt:[0,0,0,0,0],
-  ab:[{cd:5,t:0},{cd:10,t:0},{cd:0,t:0},{cd:13,t:0},{cd:1e9,t:0}],ai:[{wave:lv.wave,tick:1},{wave:lv.wave,tick:.5},{wave:99,tick:9},{wave:lv.wave,tick:.9},{wave:lv.wave+4,tick:.7}],obs:lv.obs,col:[],seed:1000+li*77+(mode==='demo'?5:0)+(camp===2?333:camp===3?777:camp===4?555:camp===5?999:camp===6?1111:camp===7?1313:0)+(lv.seed||0),prodOn:{},uid:1};
+  ab:[{cd:5,t:0},{cd:10,t:0},{cd:0,t:0},{cd:13,t:0},{cd:1e9,t:0}],ai:[{wave:lv.wave,tick:1},{wave:lv.wave,tick:.5},{wave:99,tick:9},{wave:lv.wave,tick:.9},{wave:lv.wave+4,tick:.7}],obs:lv.obs,col:[],seed:1000+li*77+(mode==='demo'?5:0)+(camp===2?333:camp===3?777:camp===4?555:camp===5?999:camp===6?1111:camp===7?1313:camp===8?1414:0)+(lv.seed||0),prodOn:{},uid:1};
  for(const t of FAC[pfac].order)G.prodOn[t]=!lv.castes||lv.castes.includes(t);
  for(const k in TRAPS)G.trapN[k]=G.trapMax;
  for(const o of lv.obs){if(o.k==='branch')G.col.push({c:2,ax:o.ax,ay:o.ay,bx:o.bx,by:o.by,r:o.r});else G.col.push({c:1,x:o.x,y:o.y,r:o.k==='water'?o.r*1.02:o.r});}
@@ -695,7 +720,7 @@ function newGame(mode,li,pfac,lvOverride,camp){
   for(const q of G.nat)G.col.push({c:3,x:q.x,y:q.y,r:q.r});}
  resize();
  if(camp===5)for(const q of G.pts)if(q.y<(lv.eh||330)){q.own=1;q.hp=1;}
- if(camp===7||lv.def)for(const q of G.pts){q.own=1;q.hp=1;}
+ if((camp===7||lv.def)&&camp!==8)for(const q of G.pts){q.own=1;q.hp=1;}
  if(camp===6)for(const q of G.pts){const n=nearestOf(G.nests,q);if(n.side!==0&&hyp(n.x-q.x,n.y-q.y)<(lv.eh||140)){q.own=n.side;q.hp=1;}}
  const pnest=G.nests[0];
  if(mode==='demo'){for(let i=0;i<lv.start;i++){const u=spawn(0,pfac,pickType(pnest),pnest.x+rnd(-50,50),pnest.y-rnd(30,90));}}
@@ -733,6 +758,7 @@ const gi=(x,y)=>Math.max(0,Math.min(GH-1,y/CS|0))*GW+Math.max(0,Math.min(GW-1,x/
 function buildGrid(){for(const c of grid)c.length=0;for(const u of G.units)if(u.alive)grid[gi(u.x,u.y)].push(u);}
 function findEnemy(u,R){
  let best=null,bd=R;const bug=u.fac==='bug';
+ if(u.siege&&!u.provoked){for(const n of G.nests)if(n.alive&&n.side===0){const d=hyp(n.x-u.x,n.y-u.y)-n.r;if(d<bd){bd=d;best=n;}}return best;}
  const x0=Math.max(0,Math.floor((u.x-R)/CS)),x1=Math.min(GW-1,Math.floor((u.x+R)/CS)),y0=Math.max(0,Math.floor((u.y-R)/CS)),y1=Math.min(GH-1,Math.floor((u.y+R)/CS));
  for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++)for(const e of grid[cy*GW+cx]){if(!e.alive||!foe(u.side,e.side)||(bug&&bn(e.side,'beast')))continue;const d=hyp(e.x-u.x,e.y-u.y)-e.r-(u.d.dodge&&e.d.range?30:0);if(d<bd){bd=d;best=e;}}
  for(const n of G.nests)if(n.alive&&foe(u.side,n.side)&&!(bug&&bn(n.side,'beast'))){const d=hyp(n.x-u.x,n.y-u.y)-n.r;if(d<bd-6){bd=d;best=n;}}
@@ -796,7 +822,7 @@ function hurt(e,amt,raw,poison,src){
  if(!e.alive)return;
  if(e.isNest&&e.guards&&e.guards.some(g=>g.alive)){e.hitT=.15;if(Math.random()<.1)part(e.x+rnd(-14,14),e.y+rnd(-14,14),'spark',1,10,4,.4);if(src===0&&G.time>(G.shT||0)){G.shT=G.time+6;toast('Гнездо под защитой стража — сначала убей его!');}return;}
  if(e.isNest){amt*=Math.max(.3,1-.35*bn(e.side,'wall'));e.hp-=amt;e.hitT=.2;if(Math.random()<.15)part(e.x+rnd(-12,12),e.y+rnd(-10,10),'dust',1,10,5,.8);if(e.hp<=0)killNest(e);return;}
- if(src!=null)e.lastHit=src;
+ if(src!=null)e.lastHit=src;if(e.siege&&src===0&&!e.provoked&&!raw)e.provoked=true;
  if(!raw)amt=Math.max(1,amt-((e.d.armor||0)+bn(e.side,'shell'))*1.2);
  if(isShell(e.side))amt*=.4;
  e.hp-=amt;if(!raw||amt>2)e.fl=.11;if(poison)e.poison={dps:poison.dps,t:poison.dur,src};
@@ -807,7 +833,7 @@ function killUnit(u){
  if(u.d.boss){sfx('boss');shake(7,u.x,u.y);part(u.x,u.y,'smoke',20,30,10,2);toast('🏆 '+u.d.name+' повержен!'+(u.home&&u.home.alive?' Гнездо беззащитно':''));}
  if(u.side===2&&u.fac==='nomad'){}
  else if(u.side===2){G.bugsKilled++;part(u.x,u.y,'dust',10,30,8,1.2);const sd=u.lastHit;
-  if(isCol(sd)&&u.d.loot){const got=loot(sd,u.d.loot);if(got){if(sd===0)toast(u.d.name+' повержен! +'+got+' муравьёв');else if(seen(0,u.x,u.y))toast('Враг добил жука и получил подкрепление');}}}
+  if(isCol(sd)&&u.d.loot&&!(u.raid&&G.camp===8)){const got=loot(sd,u.d.loot);if(got){if(sd===0)toast(u.d.name+' повержен! +'+got+' муравьёв');else if(seen(0,u.x,u.y))toast('Враг добил жука и получил подкрепление');}}}
  else if(u.side!==0)G.killed++;else G.lost++;
  const o={x:u.x,y:u.y,a:u.a+rnd(-.4,.4),fac:u.fac,type:u.type};if(u.carry){u.carry.by=null;u.carry=null;}
  if(G.mode==='play'&&u.d.size<=1.7&&!u.d.boss&&G.bodies.length<160){o.t=0;o.food=u.d.size;G.bodies.push(o);}else bake(o);
@@ -948,28 +974,47 @@ function buildDef(lv,seed){const D=lv.def,R=rng(seed),F=FAC[G.fac[1]],cost=t=>{c
   if(D.tier>=1&&w>=2&&(w%2===0||R()<.35)){const ks=Object.keys(BUG),n=1+(D.tier>=2&&w>=5?1:0);for(let i=0;i<n;i++)bugs.push(ks[R()*ks.length|0]);bud-=5*n;}
   if(D.tier>=2&&w>=3&&w%3===0){nom=Math.min(55,Math.round(12+w*2.5+D.size*.6));bud-=nom*.12;}
   while(bud>0){let r=R()*sum,i=0;for(;i<3;i++){r-=mix[i];if(r<0)break;}const t=F.order[i];u[t]=(u[t]||0)+1;bud-=cost(t);}
-  list.push({dir:D.dirs[R()*D.dirs.length|0],u,bugs,boss,nom,rest:20+R()*10});}
- return{N:D.N,T:D.T,slot:D.T/D.N,list,i:0,t:28,alive:0,lastN:1,done:false,cl:0,ann:false};}
+  const bw=D.bugEvery&&!lastW&&!boss.length&&w>=D.bugFrom&&(w-D.bugFrom)%D.bugEvery===0;
+  if(bw){const ks=Object.keys(BUG),n=Math.round(D.bugN*(1+w*.12));list.push({dir:D.dirs[R()*D.dirs.length|0],u:{},bugs:Array.from({length:n},()=>ks[R()*ks.length|0]),boss:[],nom:0,bugW:true,tgt:-1,rest:20+R()*10});continue;}
+  const tgt=D.ptHit&&lv.pts&&lv.pts.length&&!lastW&&R()<D.ptHit?R()*lv.pts.length|0:-1;
+  list.push({dir:D.dirs[R()*D.dirs.length|0],u,bugs,boss,nom,rest:20+R()*10,tgt});}
+ return{N:D.N,T:D.T,slot:D.T/D.N,list,i:0,t:28,alive:0,lastN:1,done:false,cl:0,ann:false,hold:!!lv.hold||G.camp===8,fin:-1,lost:false};}
+function wTgt(w){return w.bugW?'🪲 прямо на гнездо':w.tgt>=0&&G.pts[w.tgt]?'→ на точку '+(SEC[G.pts[w.tgt].k]?SEC[G.pts[w.tgt].k].icon:'⬢'):'→ на гнездо';}
 function waveText(w){const F=FAC[G.fac[1]],a=[];for(const t of F.order)if(w.u[t])a.push(F.units[t].name+' ×'+w.u[t]);
  const bc={};for(const t of w.bugs)bc[t]=(bc[t]||0)+1;for(const t in bc)a.push('🪲 '+BUG[t].name+(bc[t]>1?' ×'+bc[t]:''));
  if(w.nom)a.push('🐜 кочевники ×'+w.nom);for(const t of w.boss)a.push('👹 '+BOSS[t].name);return a.join(' · ');}
 function edgePt(dir){return dir==='N'?{x:rnd(70,350),y:10,a:Math.PI/2}:dir==='W'?{x:10,y:rnd(160,460),a:0}:{x:W-10,y:rnd(160,460),a:Math.PI};}
 function spawnWave(w){const D=G.def,P=edgePt(w.dir),home=G.nests[0];let n=0;
- const add=(side,fac,t,sp)=>{const u=spawn(side,fac,t,Math.max(6,Math.min(W-6,P.x+rnd(-sp,sp)*(w.dir==='N'?1:.4))),Math.max(6,Math.min(H-6,P.y+rnd(-sp,sp)*(w.dir==='N'?.4:1))));u.raid=true;u.wave=true;u.a=P.a;orderMove(u,home.x+rnd(-30,30),home.y-20+rnd(-25,25));n++;return u;};
+const tq=w.tgt>=0?G.pts[w.tgt]:null;
+ const add=(side,fac,t,sp)=>{const u=spawn(side,fac,t,Math.max(6,Math.min(W-6,P.x+rnd(-sp,sp)*(w.dir==='N'?1:.4))),Math.max(6,Math.min(H-6,P.y+rnd(-sp,sp)*(w.dir==='N'?.4:1))));u.raid=true;u.wave=true;u.a=P.a;if(tq){u.tgt=tq;orderMove(u,tq.x+rnd(-14,14),tq.y+rnd(-14,14));}else orderMove(u,home.x+rnd(-30,30),home.y-20+rnd(-25,25));if(w.bugW)u.siege=true;n++;return u;};
  for(const t in w.u)for(let i=0;i<w.u[t];i++)add(1,G.fac[1],t,40);
  for(const t of w.bugs)add(2,'bug',t,30);
  for(let i=0;i<w.nom;i++)add(2,'nomad','nomad',55);
  for(const t of w.boss){const bb=add(1,'boss',t,10);if(t==='centipede'){bb.trail=[];for(let k=0;k<160;k++)bb.trail.push({x:bb.x-Math.cos(P.a)*k*1.5,y:bb.y-Math.sin(P.a)*k*1.5});}}
- D.lastN=n;D.alive+=n;sfx(w.boss.length?'boss':w.nom?'nomad':'alarm');toast('🌊 Волна '+(D.i+1)+'/'+D.N+' — '+DIRN[w.dir]+'!');}
+ D.lastN=n;D.alive+=n;sfx(w.boss.length?'boss':w.nom||w.bugW?'nomad':'alarm');toast((w.bugW?'🪲 Жучиная волна ':'🌊 Волна ')+(D.i+1)+'/'+D.N+' — '+DIRN[w.dir]+(G.camp===8?' '+wTgt(w):'')+'!');}
 function updDef(dt){const D=G.def;if(D.done||G.over)return;
  let al=0;for(const u of G.units)if(u.alive&&u.raid)al++;const was=D.alive;D.alive=al;
  if(D.i>0&&was>0&&al===0){D.cl=D.i;if(D.i<D.N){D.t=Math.max(Math.min(D.t,D.list[D.i-1].rest),20);toast('✅ Волна '+D.i+' отбита! Передышка');sfx('ui');}}
- if(D.i>=D.N){if(al===0)D.done=true;return;}
+ if(D.i>=D.N&&al===0){if(!D.hold){D.done=true;return;}const need=Math.ceil(G.pts.length/2);
+  if(G.own[0]>=need){D.done=true;return;}
+  if(D.fin<0){D.fin=45;sfx('alarm');toast('⬢ Волны отбиты, но точек мало! Займи '+need+' за 45 с');}
+  D.fin-=dt;if(D.fin<=0){D.lost=true;}return;}
+ if(D.i>=D.N){defAI(dt);return;}
  const prev=D.t;D.t-=dt;if(prev>5&&D.t<=5)sfx('alarm');
  if(D.t<=0){spawnWave(D.list[D.i]);D.i++;D.t=D.i<D.N?D.slot:0;}
- D.aiT=(D.aiT||0)-dt;if(D.aiT<=0){D.aiT=.6;const h=G.nests[0];for(const u of G.units)if(u.alive&&u.raid&&!u.target&&u.order.k==='idle')orderMove(u,h.x+rnd(-28,28),h.y-18+rnd(-22,22));}}
+ defAI(dt);}
+function defAI(dt){const D=G.def;D.aiT=(D.aiT||0)-dt;if(D.aiT>0)return;D.aiT=.6;const h=G.nests[0],gc=new Map();
+ for(const u of G.units)if(u.alive&&u.raid&&u.tgt&&u.guarding)gc.set(u.tgt,(gc.get(u.tgt)||0)+1);
+ for(const u of G.units){if(!u.alive||!u.raid||u.target)continue;
+  if(u.tgt){const q=u.tgt;if(q.own===1){if(u.guarding||(gc.get(q)||0)<3){if(!u.guarding){u.guarding=true;gc.set(q,(gc.get(q)||0)+1);}if(u.order.k==='idle'&&hyp(u.x-q.x,u.y-q.y)>26)orderMove(u,q.x+rnd(-16,16),q.y+rnd(-16,16));continue;}u.tgt=null;}
+   else{u.guarding=false;if(u.order.k==='idle')orderMove(u,q.x+rnd(-12,12),q.y+rnd(-12,12));continue;}}
+  if(u.order.k==='idle')orderMove(u,h.x+rnd(-28,28),h.y-18+rnd(-22,22));}}
 function defProg(){const D=G.def;if(!D)return 0;const part=D.alive>0&&D.i>0?1-D.alive/Math.max(1,D.lastN):0;return Math.min(1,(D.i-(D.alive>0?1:0)+(D.alive>0?part:0))/D.N);}
-function drawDefArrow(){const D=G.def;if(!D||D.i>=D.N||D.t>14||G.over)return;const w=D.list[D.i],pul=.6+.4*Math.sin(G.time*8);
+function drawDefArrow(){const D=G.def;if(!D||G.over)return;const pul=.6+.4*Math.sin(G.time*8);
+ if(G.camp===8){const hot=new Set();for(const u of G.units)if(u.alive&&u.raid&&u.tgt)hot.add(u.tgt);if(D.i<D.N&&D.t<=15){const w=D.list[D.i];if(w.tgt>=0&&G.pts[w.tgt])hot.add(G.pts[w.tgt]);}
+  ctx.lineWidth=2.5;ctx.setLineDash([6,4]);for(const q of hot){ctx.strokeStyle=`rgba(255,80,50,${pul})`;ctx.beginPath();ctx.arc(q.x,q.y,31,G.time,G.time+TAU);ctx.stroke();}ctx.setLineDash([]);
+  if(D.i<D.N&&D.t<=15&&D.list[D.i].bugW){const h=G.nests[0];ctx.strokeStyle=`rgba(255,80,50,${pul})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(h.x,h.y,40,0,TAU);ctx.stroke();}}
+ if(D.i>=D.N||D.t>14)return;const w=D.list[D.i];
  const pos=w.dir==='N'?[[W/2,22,Math.PI/2]]:w.dir==='W'?[[20,310,0]]:[[W-20,310,Math.PI]];
  for(const[x,y,a]of pos){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.scale(1.7,1.7);ctx.globalAlpha=pul;ctx.fillStyle='#ffd23a';ctx.strokeStyle='#140a04';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(14,0);ctx.lineTo(-6,-12);ctx.lineTo(-2,0);ctx.lineTo(-6,12);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore();}ctx.globalAlpha=1;}
 function update(dt){
@@ -1006,7 +1051,7 @@ function update(dt){
  G.units=G.units.filter(u=>u.alive);
  if(!G.over){const pA=G.nests.some(n=>n.side===0&&n.alive),eA=G.nests.some(n=>n.side!==0&&n.alive);
   if(G.domWin!=null){G.over=true;G.win=G.domWin===0;G.endT=2;G.sel.clear();}
-  else if(G.def){if(!pA||G.def.done){G.over=true;G.win=pA;G.endT=1.8;G.sel.clear();}}
+  else if(G.def){if(!pA||G.def.done||G.def.lost){G.over=true;G.win=pA&&!G.def.lost;G.endT=1.8;G.sel.clear();}}
   else if(!pA||!eA){G.over=true;G.win=!eA;G.endT=G.mode==='demo'?3:1.8;G.sel.clear();}}
  else if(!G.shown){G.endT-=dt;if(G.endT<=0){G.shown=true;if(G.mode==='demo')newDemo();else showResult();}}
 }
@@ -1271,7 +1316,7 @@ function tap(p){
 
 /* ---------- UI ---------- */
 let toastT=0;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1300);}
-const OVS=['menu','levels','pause','result','hint','hint2','hint3','hint4','hint5','hint6','hint7','daily'];
+const OVS=['menu','levels','pause','result','hint','hint2','hint3','hint4','hint5','hint6','hint7','hint8','daily'];
 function show(id){for(const o of OVS)$(o).classList.toggle('show',o===id);}
 function setHud(on){$('top').classList.toggle('hid',!on);$('bottom').classList.toggle('hid',!on);if(!on)$('bonBar').classList.add('hid');}
 const HUD={bars:{},last:{}};
@@ -1286,9 +1331,9 @@ function buildHUD(){
    G.prodOn[t]=!G.prodOn[t];bt.classList.toggle('on',G.prodOn[t]);bt.classList.toggle('off',!G.prodOn[t]);
    const n=pnest();if(n&&n.cur&&!G.prodOn[n.cur]){n.cur=pickType(n);n.prodT=0;}};
   p.appendChild(bt);HUD.bars[t]=bar;}
- $('lvl').textContent=G.daily?'Испытание · '+G.daily.label:(G.camp===7?'Оборона · ':G.camp===6?'Три колонии · ':G.camp===2?'Туман · ':G.camp===3?'Захват · ':G.camp===4?'Боссы · ':G.camp===5?'Сектора · ':'')+(G.daily?'':(G.li+1)+'. '+G.lv.name);
+ $('lvl').textContent=G.daily?'Испытание · '+G.daily.label:(G.camp===8?'Осада · ':G.camp===7?'Оборона · ':G.camp===6?'Три колонии · ':G.camp===2?'Туман · ':G.camp===3?'Захват · ':G.camp===4?'Боссы · ':G.camp===5?'Сектора · ':'')+(G.daily?'':(G.li+1)+'. '+G.lv.name);
  $('bAuto').classList.toggle('on',G.auto);$('bTrap').classList.toggle('hid',G.noTraps);$('trapPanel').classList.remove('show');
- const c3=G.camp===3;$('bNest').classList.toggle('hid',!c3);const dF=!!G.def;$('wx').classList.toggle('hid',!(c3||G.camp>=5||dF||G.lv.night||G.lv.rain||G.lv.quake));$('bWave').classList.toggle('hid',!dF);$('defBar').classList.toggle('hid',!dF);$('waveBan').classList.add('hid');HUD.last.ban='';$('bonBar').classList.toggle('hid',G.camp<5);$('bonBar').innerHTML='';HUD.last.bon='';$('cmds').classList.toggle('c5',c3||dF);$('bAuto').textContent=c3||dF?'Авто':'Авто‑фронт';
+ const c3=G.camp===3;$('bNest').classList.toggle('hid',!c3);const dF=!!G.def;$('wx').classList.toggle('hid',!(c3||G.camp>=5||dF||G.lv.night||G.lv.rain||G.lv.quake));$('bWave').classList.toggle('hid',!dF);$('cDead').classList.toggle('hid',dF);$('defBar').classList.toggle('hid',!dF);$('waveBan').classList.add('hid');HUD.last.ban='';$('bonBar').classList.toggle('hid',G.camp<5);$('bonBar').innerHTML='';HUD.last.bon='';$('cmds').classList.toggle('c5',c3||dF);$('bAuto').textContent=c3||dF?'Авто':'Авто‑фронт';
 }
 function hud(){
  setText('cMine',String(G.cnt[0]));setText('cFoe',G.fog?'?':String(G.cnt[1]+G.cnt[3]+G.cnt[4]));setText('cDead','☠ '+G.dead);
@@ -1301,9 +1346,12 @@ function hud(){
  setText('bNone',G.sel.size?'Снять · '+G.sel.size:'Снять');
  {const any=Object.values(G.trapN).some(v=>v>0);const cl=any?'ready':'';if(HUD.last.trap!==cl){HUD.last.trap=cl;$('bTrap').className=cl;}if($('trapPanel').classList.contains('show')&&(G.time*4|0)!==HUD.last.tpt){HUD.last.tpt=G.time*4|0;buildTrapPanel();}}
  if(!G.def&&G.camp!==3&&G.camp<5&&(G.lv.night||G.lv.rain||G.lv.quake))setText('wx',(G.night>.5?'🌙':'☀️')+(G.rain>.2?'🌧':'')+(G.q?'⚠':''));
- if(G.def){const D=G.def,wxs=(G.night>.5?'🌙':'')+(G.rain>.2?'🌧':'')+(G.q?'⚠':'');setText('wx','🌊'+Math.min(D.i,D.N)+'/'+D.N+(D.i<D.N?' '+fmt(Math.max(0,D.t)):'')+(wxs?' '+wxs:''));
-  const show=D.i<D.N&&!G.over&&(D.alive===0||D.t<=15),key=show?(D.i+'|'+Math.ceil(D.t)+'|'+(D.t<=5)):'';
-  if(HUD.last.ban!==key){HUD.last.ban=key;const bn2=$('waveBan');bn2.classList.toggle('hid',!show);if(show){const w=D.list[D.i];bn2.classList.toggle('hot',D.t<=5);$('wbT').textContent='Волна '+(D.i+1)+'/'+D.N+' через '+Math.ceil(Math.max(0,D.t))+' с · '+DIRN[w.dir];$('wbS').textContent=waveText(w);}}
+ if(G.def){const D=G.def,wxs=(G.night>.5?'🌙':'')+(G.rain>.2?'🌧':'')+(G.q?'⚠':'');setText('wx','🌊'+Math.min(D.i,D.N)+'/'+D.N+(D.i<D.N?' '+fmt(Math.max(0,D.t)):'')+(D.hold?' ⬢'+G.own[0]:'')+(wxs?' '+wxs:''));
+  if(G.paused){if(HUD.last.ban!=='p'){HUD.last.ban='p';$('waveBan').classList.add('hid');}}
+  else{const left=D.hold&&D.i>=D.N&&D.alive>0&&!G.over,fin=D.fin>=0&&!G.over||left,show=fin||D.i<D.N&&!G.over&&(D.alive===0||D.t<=15),key=left?'l'+D.alive:fin?'f'+Math.ceil(D.fin)+'|'+G.own[0]:show?(D.i+'|'+Math.ceil(D.t)+'|'+(D.t<=5)):'';
+  if(HUD.last.ban!==key){HUD.last.ban=key;const bn2=$('waveBan');bn2.classList.toggle('hid',!show);if(left){bn2.classList.remove('hot');$('wbT').textContent='Волн больше нет · врагов осталось '+D.alive;$('wbS').textContent='Добей охрану точек и держи хотя бы половину точек.';}
+   else if(fin){bn2.classList.add('hot');const need=Math.ceil(G.pts.length/2);$('wbT').textContent='⬢ Займи точки: '+G.own[0]+'/'+need+' · осталось '+Math.ceil(D.fin)+' с';$('wbS').textContent='Волны отбиты. Нужно держать хотя бы половину точек.';}
+   else if(show){const w=D.list[D.i];bn2.classList.toggle('hot',D.t<=5||!!w.bugW);$('wbT').textContent=(w.bugW?'🪲 Жучиная волна ':'Волна ')+(D.i+1)+'/'+D.N+' через '+Math.ceil(Math.max(0,D.t))+' с · '+DIRN[w.dir];$('wbS').textContent=(G.camp===8?wTgt(w)+' · ':'')+waveText(w);}}}
   $('defBar').firstChild.style.width=(defProg()*100).toFixed(1)+'%';
   const rd=D.alive===0&&D.i<D.N&&D.t>4&&!G.over?'ready':'';if(HUD.last.wv!==rd){HUD.last.wv=rd;$('bWave').className=rd;}}
  if(G.camp===3){const ok=canBuild(0).length>0,bld=G.pts.find(q=>q.build&&q.build.side===0);const cl=ok?'ready':'';if(HUD.last.nest!==cl){HUD.last.nest=cl;$('bNest').className=cl;}
@@ -1316,7 +1364,7 @@ function hud(){
 }
 function buildMenu(){const box=$('facs');box.innerHTML='';
  for(const f of['red','black','yellow']){const F=FAC[f],bt=document.createElement('button');bt.className='fcard';bt.style.setProperty('--c',F.ui);
-  bt.innerHTML=`<div class="fh"><span class="fn">${F.name}</span><span class="fp">Обучение ${Math.min(prog[f]-1,LV.length)}/8 · Туман ${Math.min(prog2[f]-1,LV2.length)}/8 · Захват ${Math.min(prog3[f]-1,LV3.length)}/8 · Боссы ${Math.min(prog4[f]-1,LV4.length)}/8 · Сектора ${Math.min(prog5[f]-1,LV5.length)}/8 · Три колонии ${Math.min(prog6[f]-1,LV6.length)}/8 · Оборона ${Math.min(prog7[f]-1,LV7.length)}/8</span></div><div class="ft">${F.tag} · спецприём «${F.ab.name}»: ${F.ab.desc}</div><div class="fu"></div>`;
+  bt.innerHTML=`<div class="fh"><span class="fn">${F.name}</span><span class="fp">Обучение ${Math.min(prog[f]-1,LV.length)}/8 · Туман ${Math.min(prog2[f]-1,LV2.length)}/8 · Захват ${Math.min(prog3[f]-1,LV3.length)}/8 · Боссы ${Math.min(prog4[f]-1,LV4.length)}/8 · Сектора ${Math.min(prog5[f]-1,LV5.length)}/8 · Три колонии ${Math.min(prog6[f]-1,LV6.length)}/8 · Оборона ${Math.min(prog7[f]-1,LV7.length)}/8 · Осада ${Math.min(prog8[f]-1,LV8.length)}/8</span></div><div class="ft">${F.tag} · спецприём «${F.ab.name}»: ${F.ab.desc}</div><div class="fu"></div>`;
   const fu=bt.querySelector('.fu');for(const t of F.order){const it=document.createElement('div');it.className='ui';it.appendChild(icon(f,t,40));const sp=document.createElement('span');sp.textContent=F.units[t].name;it.appendChild(sp);fu.appendChild(it);}
   bt.onclick=()=>openLevels(f);box.appendChild(bt);}}
 function openLevels(f){curFac=f;const F=FAC[f];$('lvTitle').textContent=F.name;$('lvTitle').style.color=F.ui;const g=$('lvGrid');g.innerHTML='';
@@ -1334,7 +1382,8 @@ function openLevels(f){curFac=f;const F=FAC[f];$('lvTitle').textContent=F.name;$
  const c5=()=>sec('Кампания 5: Сектора 🗺️',lk5?'Откроется после кампании «Боссы и кочевники» за эту колонию.':'Как в Z: каждый сектор даёт колонии своё преимущество. Победа — гнездо.',LV5,prog5,5,lk5);
  const c6=()=>sec('Кампания 6: Три колонии 👑','Три колонии и дикие аргентинские муравьи. Новые сектора, господство, союзы врагов против лидера.',LV6,prog6,6,false);
  const c7=()=>sec('Кампания 7: Оборона 🛡️','Гнезда врага нет — волны идут с краёв. Продержись. Ловушки быстрее и по 2 заряда.',LV7,prog7,7,false);
- c7();c6();c1();c2();c3();c4();c5();
+ const c8=()=>sec('Кампания 8: Осада 🏰','Волны мощнее и бьют по точкам. Жучиные волны идут прямо на гнездо. Отбей всё и держи половину точек.',LV8,prog8,8,false);
+ c8();c7();c6();c1();c2();c3();c4();c5();
  show('levels');}
 function startLevel(i,camp){camp=camp||1;show(null);setHud(true);newGame('play',i,curFac,null,camp);buildHUD();
  if(camp===1&&i===0&&!seenHint){G.paused=true;show('hint');}
@@ -1343,7 +1392,8 @@ function startLevel(i,camp){camp=camp||1;show(null);setHud(true);newGame('play',
  else if(camp===4&&!seenC4){G.paused=true;show('hint4');}
  else if(camp===5&&!seenC5){G.paused=true;show('hint5');}
  else if(camp===6&&!seenC6){G.paused=true;show('hint6');}
- else if(camp===7&&!seenC7){G.paused=true;show('hint7');}}
+ else if(camp===7&&!seenC7){G.paused=true;show('hint7');}
+ else if(camp===8&&!seenC8){G.paused=true;show('hint8');}}
 /* ---------- daily challenge ---------- */
 const MODS={fog:{i:'🌫️',n:'Туман войны',d:'видно только то, что видят твои муравьи'},night:{i:'🌙',n:'Ночь',d:'ночью обзор падает почти вдвое'},rain:{i:'🌧️',n:'Ливни',d:'низины затапливает, в воде вязнут'},
  quake:{i:'⚠️',n:'Медведки',d:'вылезают из-под земли и жрут всех в круге'},boss:{i:'👹',n:'Страж',d:'босс стережёт гнездо врага'},nomad:{i:'🐜',n:'Кочевники',d:'лавины кочевых муравьёв жрут всех'},
@@ -1407,11 +1457,11 @@ function toMenu(){$('trapPanel').classList.remove('show');if(SND.rain)SND.rain.g
 function fmt(t){t=Math.round(t);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');}
 function showResult(){
  sfx(G.win?'win':'lose');if(G.daily){showDailyResult();return;}$('rNext').textContent='Следующий фронт';$('rAgain').textContent='Заново';$('rLv').textContent='К фронтам';
- const cp=G.camp,last=G.li===G.levels.length-1,P=cp===7?prog7:cp===6?prog6:cp===5?prog5:cp===4?prog4:cp===3?prog3:cp===2?prog2:prog;
+ const cp=G.camp,last=G.li===G.levels.length-1,P=cp===8?prog8:cp===7?prog7:cp===6?prog6:cp===5?prog5:cp===4?prog4:cp===3?prog3:cp===2?prog2:prog;
  const unlock=false;
  if(G.win){P[curFac]=Math.max(P[curFac],Math.min(G.levels.length+1,G.li+2));save();}
- $('rT').textContent=G.win?(last?(cp===7?'НЕПРИСТУПНАЯ КРЕПОСТЬ':cp===6?'ИМПЕРАТОР САН‑ДИЕГО':cp===5?'ВЛАДЫКА СЕКТОРОВ':cp===4?'ЦАРЬ ГОРЫ':cp===3?'СУПЕРКОЛОНИЯ':cp===2?'ТУМАН РАССЕЯН':'САН‑ДИЕГО ВЗЯТ'):'ПОБЕДА'):'ПОРАЖЕНИЕ';$('rT').style.color=G.win?FAC[curFac].ui:'#ff6a5a';
- $('rS').textContent=G.win?(last?(cp===7?'Кампания «Оборона» за «'+FAC[curFac].name+'» пройдена. Ни одна волна не прорвалась!':cp===6?'Кампания «Три колонии» за «'+FAC[curFac].name+'» пройдена. Две колонии склонились!':cp===5?'Кампания «Сектора» за «'+FAC[curFac].name+'» пройдена. Сан‑Диего твой целиком!':cp===4?(unlock?'Открыта кампания 5 «Сектора» 🗺️':'Кампания «Боссы и кочевники» пройдена.'):cp===3?(unlock?'Открыта кампания 4 «Боссы и кочевники» 🐜':'Кампания «Захват» пройдена.'):cp===2?(unlock?'Открыта кампания 3 «Захват» 🍬':'Кампания «Туман войны» пройдена.'):(unlock?'Открыта кампания «Туман войны» 😈':'Тренировочная кампания пройдена.')):G.def?'Все '+G.def.N+' волн отбиты. Гнездо выстояло.':G.domWin===0?'Господство над секторами установлено. Фронт сдвинулся.':'Вражеский муравейник пал. Фронт сдвинулся.'):G.def?'Главное гнездо пало на волне '+Math.max(1,G.def.i)+' из '+G.def.N+'. Ставь ловушки на пути волн.':G.domWin>0?FAC[G.fac[G.domWin]].name+' удержали господство над секторами. Перехвати сектора раньше.':'Все твои гнёзда разрушены. Перегруппируйся и попробуй снова.';
+ $('rT').textContent=G.win?(last?(cp===8?'ОСАДА СНЯТА':cp===7?'НЕПРИСТУПНАЯ КРЕПОСТЬ':cp===6?'ИМПЕРАТОР САН‑ДИЕГО':cp===5?'ВЛАДЫКА СЕКТОРОВ':cp===4?'ЦАРЬ ГОРЫ':cp===3?'СУПЕРКОЛОНИЯ':cp===2?'ТУМАН РАССЕЯН':'САН‑ДИЕГО ВЗЯТ'):'ПОБЕДА'):'ПОРАЖЕНИЕ';$('rT').style.color=G.win?FAC[curFac].ui:'#ff6a5a';
+ $('rS').textContent=G.win?(last?(cp===8?'Кампания «Осада» за «'+FAC[curFac].name+'» пройдена. Сан‑Диего выстоял!':cp===7?'Кампания «Оборона» за «'+FAC[curFac].name+'» пройдена. Ни одна волна не прорвалась!':cp===6?'Кампания «Три колонии» за «'+FAC[curFac].name+'» пройдена. Две колонии склонились!':cp===5?'Кампания «Сектора» за «'+FAC[curFac].name+'» пройдена. Сан‑Диего твой целиком!':cp===4?(unlock?'Открыта кампания 5 «Сектора» 🗺️':'Кампания «Боссы и кочевники» пройдена.'):cp===3?(unlock?'Открыта кампания 4 «Боссы и кочевники» 🐜':'Кампания «Захват» пройдена.'):cp===2?(unlock?'Открыта кампания 3 «Захват» 🍬':'Кампания «Туман войны» пройдена.'):(unlock?'Открыта кампания «Туман войны» 😈':'Тренировочная кампания пройдена.')):G.def?'Все '+G.def.N+' волн отбиты. '+(G.def.hold?'Точки удержаны.':'Гнездо выстояло.'):G.domWin===0?'Господство над секторами установлено. Фронт сдвинулся.':'Вражеский муравейник пал. Фронт сдвинулся.'):G.def&&G.def.lost?'Волны отбиты, но точки не удержаны. Нужна хотя бы половина.':G.def?'Главное гнездо пало на волне '+Math.max(1,G.def.i)+' из '+G.def.N+'. Ставь ловушки на пути волн.':G.domWin>0?FAC[G.fac[G.domWin]].name+' удержали господство над секторами. Перехвати сектора раньше.':'Все твои гнёзда разрушены. Перегруппируйся и попробуй снова.';
  $('rStats').innerHTML=`<span>Время</span><b>${fmt(G.time)}</b>${G.def?`<span>Волн отбито</span><b>${G.def.done?G.def.N:G.def.cl}/${G.def.N}</b>`:''}<span>Убито врагов</span><b>${G.killed}</b><span>Потери</span><b>${G.lost}</b><span>Павших всего</span><b>${G.dead}</b>${G.camp>=5?`<span>Секторов у тебя</span><b>${G.own[0]}/${G.pts.length}</b>`:''}${G.bugs?`<span>Жуков добыто</span><b>${G.bugsKilled}</b>`:''}<span>Тел в гнездо</span><b>${G.food[0]}</b>`;
  $('rNext').classList.toggle('hid',!(G.win&&!last));
  show('result');}
@@ -1425,6 +1475,7 @@ $('rAgain').onclick=()=>G.daily?startDaily():startLevel(G.li,G.camp);
 $('rLv').onclick=()=>{if(G.daily){toMenu();return;}setHud(false);newDemo();openLevels(curFac);};
 $('bDaily').onclick=openDaily;$('dGo').onclick=startDaily;$('dBack').onclick=()=>show('menu');
 $('lvBack').onclick=()=>{buildMenu();show('menu');};
+$('h8Ok').onclick=()=>{seenC8=true;try{localStorage.setItem('sc_c8','1');}catch(e){}G.paused=false;show(null);};
 $('h7Ok').onclick=()=>{seenC7=true;try{localStorage.setItem('sc_c7','1');}catch(e){}G.paused=false;show(null);};
 $('h6Ok').onclick=()=>{seenC6=true;try{localStorage.setItem('sc_c6','1');}catch(e){}G.paused=false;show(null);};
 $('h5Ok').onclick=()=>{seenC5=true;try{localStorage.setItem('sc_c5','1');}catch(e){}G.paused=false;show(null);};
